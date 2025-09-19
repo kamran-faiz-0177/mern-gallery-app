@@ -2,8 +2,8 @@ const GalleryModel = require("../Models/GalleryModel");
 
 const uploadImg = async (req, res) => {
     try {
-        const { url } = req.body;
-        const pic = new GalleryModel({ imgUrl: url });
+        const { imgUrl } = req.body;
+        const pic = new GalleryModel({ imgUrl });
         await pic.save();
 
         res.status(200).json({

@@ -1,34 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import url from "../utensils";
 import { useNavigate } from "react-router-dom";
 
 
 const Upload = () => {
+    const [imgUrl, setImg] = useState();
     const navigate = useNavigate();
 
-    const handleSubmit = async (req, res) => {
+    const handleFileUpload = async (event) => {
+        try {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const data = new FormData();
+            data.append("file", file);
+            data.append("upload_preset", "first_time_using_cloudinary");
+            data.append("cloud_name", "dcvodctmi");
+
+            const url = "https://api.cloudinary.com/v1_1/dcvodctmi/image/upload";
+            const options = {
+                method: "POST",
+                body: data,
+            };
+
+            const response = await fetch(url, options);
+            const uploadedImageUrl = await response.json();
+            console.log(uploadedImageUrl.url);
+            setImg(uploadedImageUrl.url);
+        } catch (error) {
+            console.log(error.message);
+        }
+    };
+
+    const handleSubmit = async () => {
         try {
             const api_url = `${url}/api/gallery/upload`;
             const obj = {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ abc }),
+                body: JSON.stringify({ imgUrl })
             }
             const response = await fetch(api_url, obj);
-            const result = response.json();
+            const result = await response.json();
             const { success, message, error } = result;
             if (success) {
                 console.log(message);
-                navigate("/upload");
+                navigate("/");
             } else {
                 console.log(message, error);
             }
         } catch (error) {
             console.log(error.message);
         }
-    }
+    };
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
@@ -55,7 +81,26 @@ const Upload = () => {
                         />
                     </svg>
                     <span className="text-gray-600 text-sm">Click to upload or drag & drop</span>
-                    <input id="file-upload" type="file" className="hidden" />
+                    {
+                        imgUrl ? (
+                            <>
+                                <img src={imgUrl}
+                                    alt="img is loading"
+                                    className="w-45 h-45"
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <input
+                                    type="file"
+                                    id="file-upload"
+                                    accept="image/*"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                />
+                            </>
+                        )
+                    }
                 </label>
 
                 {/* Button */}
@@ -65,7 +110,7 @@ const Upload = () => {
                     Submit
                 </button>
             </div>
-        </div>
+        </div >
     );
 };
 

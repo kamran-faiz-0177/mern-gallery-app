@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const GallerySchema = new Schema({
     imgUrl: {
         type: String,
+        required: true,
     }
 }, { timestamps: true });
 
