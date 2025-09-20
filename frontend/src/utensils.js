@@ -1,3 +1,3 @@
-const url = `http://localhost:8082`;
+const url = `https://mern-gallery-app-api.vercel.app`;
 
 export default url;
