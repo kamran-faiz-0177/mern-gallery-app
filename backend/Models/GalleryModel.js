@@ -5,6 +5,10 @@ const GallerySchema = new Schema({
     imgUrl: {
         type: String,
         required: true,
+    },
+    title: {
+        type: String,
+        required: true,
     }
 }, { timestamps: true });
 

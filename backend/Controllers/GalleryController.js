@@ -2,8 +2,8 @@ const GalleryModel = require("../Models/GalleryModel");
 
 const uploadImg = async (req, res) => {
     try {
-        const { imgUrl } = req.body;
-        const pic = new GalleryModel({ imgUrl });
+        const { imgUrl, title } = req.body;
+        const pic = new GalleryModel({ imgUrl, title });
         await pic.save();
 
         res.status(200).json({
@@ -40,19 +40,25 @@ const deleteImg = async (req, res) => {
     try {
         const { id } = req.params;
 
-        await GalleryModel.findByIdAndDelete({ _id: id });
+        // Correct usage: pass id directly
+        await GalleryModel.findByIdAndDelete(id);
+
+        // If you want to send updated list after deletion
+        const imgList = await GalleryModel.find();
+
         res.status(200).json({
-            message: "images deleted successfully",
+            message: "image deleted successfully",
             success: true,
             imgList,
-        })
+        });
     } catch (error) {
         res.status(500).json({
             message: "internal server error failed to delete image",
             error: error.message,
-        })
+        });
     }
 };
+
 
 module.exports = {
     uploadImg,
